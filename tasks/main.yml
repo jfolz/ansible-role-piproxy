@@ -2,34 +2,34 @@
 
 - name: Download binary
   ansible.builtin.unarchive:
-    src: https://github.com/jfolz/piproxy/releases/download/{{ version }}/piproxy-linux-x86_64-v{{ version }}.tar.xz
+    src: https://github.com/jfolz/piproxy/releases/download/{{ piproxy_version }}/piproxy-linux-x86_64-v{{ piproxy_version }}.tar.xz
     dest: /usr/local/bin
     remote_src: yes
   become: true
 
 - name: Create group 
   ansible.builtin.group:
-    name: "{{ group }}"
+    name: "{{ piproxy_group }}"
     system: true
   become: true
-  when: user != "root"
+  when: piproxy_user != "root"
 
 - name: Create user 
   ansible.builtin.user:
-    name: "{{ user }}"
-    group: "{{ group }}"
+    name: "{{ piproxy_user }}"
+    group: "{{ piproxy_group }}"
     system: true
     shell: /sbin/nologin
     create_home: no
-    comment: "{{ service }} service user"
+    comment: "{{ piproxy_service_name }} service user"
   become: true
-  when: user != "root"
+  when: piproxy_user != "root"
 
 - name: Create config directory
   ansible.builtin.file:
-    path: /etc/{{ service }}
-    owner: "{{ user }}"
-    group: "{{ group }}"
+    path: /etc/{{ piproxy_service_name }}
+    owner: "{{ piproxy_user }}"
+    group: "{{ piproxy_group }}"
     mode: 0700
     state: directory
   become: true
@@ -37,17 +37,17 @@
 - name: Install config file
   ansible.builtin.template:
     src: templates/config.yml.j2
-    dest: /etc/{{ service }}/config.yml
-    owner: "{{ user }}"
-    group: "{{ group }}"
+    dest: /etc/{{ piproxy_service_name }}/config.yml
+    owner: "{{ piproxy_user }}"
+    group: "{{ piproxy_group }}"
     mode: 0400
   become: true
 
 - name: Create cache directory
   ansible.builtin.file:
-    path: "{{ cache_path }}"
-    owner: "{{ user }}"
-    group: "{{ group }}"
+    path: "{{ piproxy_cache_path }}"
+    owner: "{{ piproxy_user }}"
+    group: "{{ piproxy_group }}"
     mode: 0700
     state: directory
   become: true
@@ -55,11 +55,11 @@
 - name: Install service file
   ansible.builtin.template:
     src: templates/piproxy.service.j2
-    dest: /etc/systemd/system/{{ service }}.service
+    dest: /etc/systemd/system/{{ piproxy_service_name }}.service
   become: true
 
 - name: Check service status
-  command: systemctl is-active {{ service }}
+  command: systemctl is-active {{ piproxy_service_name }}
   register: service_status
   ignore_errors: true
   failed_when: false
@@ -67,7 +67,7 @@
 
 - name: Start service if it is not running
   ansible.builtin.systemd:
-    name: "{{ service }}"
+    name: "{{ piproxy_service_name }}"
     daemon_reload: true
     state: started
     enabled: true
@@ -76,7 +76,7 @@
 
 - name: Reload service if it is running
   ansible.builtin.systemd:
-    name: "{{ service }}"
+    name: "{{ piproxy_service_name }}"
     daemon_reload: true
     state: reloaded
     enabled: true

@@ -1,9 +1,9 @@
-address: {{ address }}
-cache_path: {{ cache_path }}
-cache_size: {{ cache_size }}
-read_size: {{ read_size }}
-log_level: {{ log_level }}
+address: {{ piproxy_address }}
+cache_path: {{ piproxy_cache_path }}
+cache_size: {{ piproxy_cache_size }}
+read_size: {{ piproxy_read_size }}
+log_level: {{ piproxy_log_level }}
 pingora:
-  pid_file: /run/{{ service }}/{{ service }}.pid
-  upgrade_sock: /run/{{ service }}/{{ service }}_upgrade.sock
-  {{ pingora | to_nice_yaml(indent=2) | indent(2) }}
+  pid_file: /run/{{ piproxy_service_name }}/{{ piproxy_service_name }}.pid
+  upgrade_sock: /run/{{ piproxy_service_name }}/{{ piproxy_service_name }}_upgrade.sock
+  {{ piproxy_pingora_config | to_nice_yaml(indent=2) | indent(2) }}

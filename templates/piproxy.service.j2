@@ -1,18 +1,18 @@
 [Unit]
-Description={{ service }} Pip/PyPI Cache
+Description={{ piproxy_service_name }} Pip/PyPI Cache
 After=network.target
 
 [Service]
 Type=forking
-User={{ user }}
-Group={{ group }}
-PIDFile=/run/{{ service }}/{{ service }}.pid
-ExecStartPre=+/usr/bin/mkdir -p /run/{{ service }}
-ExecStartPre=+/usr/bin/chown {{ user }}:{{ group }} /run/{{ service }}
-ExecStartPre=+/usr/bin/chmod 0700 /run/{{ service }}
-ExecStart=/usr/local/bin/piproxy-prod -j -d -c /etc/{{ service }}/config.yml
+User={{ piproxy_user }}
+Group={{ piproxy_group }}
+PIDFile=/run/{{ piproxy_service_name }}/{{ piproxy_service_name }}.pid
+ExecStartPre=+/usr/bin/mkdir -p /run/{{ piproxy_service_name }}
+ExecStartPre=+/usr/bin/chown {{ piproxy_user }}:{{ piproxy_group }} /run/{{ piproxy_service_name }}
+ExecStartPre=+/usr/bin/chmod 0700 /run/{{ piproxy_service_name }}
+ExecStart=/usr/local/bin/piproxy-prod -j -d -c /etc/{{ piproxy_service_name }}/config.yml
 ExecReload=kill -QUIT $MAINPID
-ExecReload=/usr/local/bin/piproxy-prod -j -d -u -c /etc/{{ service }}/config.yml
+ExecReload=/usr/local/bin/piproxy-prod -j -d -u -c /etc/{{ piproxy_service_name }}/config.yml
 StandardOutput=journal
 StandardError=journal
 

@@ -1,7 +1,7 @@
 Role Name
 =========
 
-A brief description of the role goes here.
+Install the [piproxy](https://github.com/jfolz/piproxy) PyPI caching proxy.
 
 Requirements
 ------------
@@ -30,7 +30,7 @@ Including an example of how to use your role (for instance, with variables passe
 License
 -------
 
-BSD
+MIT
 
 Author Information
 ------------------

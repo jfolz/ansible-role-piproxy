@@ -1,13 +1,13 @@
 ---
 # defaults file for piproxy
-version: 0.1.2
-service: piproxy
-user: piproxy
-group: piproxy
-address: 0.0.0.0:8080
-cache_path: /var/lib/cache/piproxy
-cache_size: 20G
-read_size: 256k
-log_level: info
-pingora:
+piproxy_version: "0.1.2"
+piproxy_service_name: "piproxy"
+piproxy_user: "piproxy"
+piproxy_group: "{{ piproxy_user }}"
+piproxy_address: "0.0.0.0:8080"
+piproxy_cache_path: "/var/lib/cache/{{ piproxy_service_name }}"
+piproxy_cache_size: "20G"
+piproxy_read_size: "256k"
+piproxy_log_level: "info"
+piproxy_pingora_config:
   threads: 4
