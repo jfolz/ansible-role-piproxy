@@ -17,10 +17,11 @@ galaxy_info:
   platforms:
     - name: Ubuntu
       versions:
-        - jammy
-        - noble
+        - "focal"
+        - "jammy"
+        - "noble"
     - name: Debian
       versions:
-        - bullseye
-        - bookworm
+        - "bullseye"
+        - "bookworm"
 dependencies: []
