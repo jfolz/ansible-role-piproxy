@@ -8,10 +8,19 @@ galaxy_info:
   # next line and provide a value
   # issue_tracker_url: http://example.com/issue/tracker
   license: MIT
-  min_ansible_version: "2.1"
+  min_ansible_version: "2.7"
   galaxy_tags:
     - pypi
     - cache
     - proxy
     - pingora
+  platforms:
+    - name: Ubuntu
+      versions:
+        - jammy
+        - noble
+    - name: Debian
+      versions:
+        - bullseye
+        - bookworm
 dependencies: []
