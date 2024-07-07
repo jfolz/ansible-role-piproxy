@@ -4,23 +4,23 @@
   ansible.builtin.unarchive:
     src: https://github.com/jfolz/piproxy/releases/download/{{ piproxy_version }}/piproxy-linux-x86_64-v{{ piproxy_version }}.tar.xz
     dest: /usr/local/bin
-    remote_src: yes
+    remote_src: true
   become: true
 
-- name: Create group 
+- name: Create group
   ansible.builtin.group:
     name: "{{ piproxy_group }}"
     system: true
   become: true
   when: piproxy_user != "root"
 
-- name: Create user 
+- name: Create user
   ansible.builtin.user:
     name: "{{ piproxy_user }}"
     group: "{{ piproxy_group }}"
     system: true
     shell: /sbin/nologin
-    create_home: no
+    create_home: false
     comment: "{{ piproxy_service_name }} service user"
   become: true
   when: piproxy_user != "root"
@@ -30,7 +30,7 @@
     path: /etc/{{ piproxy_service_name }}
     owner: "{{ piproxy_user }}"
     group: "{{ piproxy_group }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
 
@@ -40,7 +40,7 @@
     dest: /etc/{{ piproxy_service_name }}/config.yml
     owner: "{{ piproxy_user }}"
     group: "{{ piproxy_group }}"
-    mode: 0400
+    mode: "0400"
   become: true
 
 - name: Create cache directory
@@ -48,7 +48,7 @@
     path: "{{ piproxy_cache_path }}"
     owner: "{{ piproxy_user }}"
     group: "{{ piproxy_group }}"
-    mode: 0700
+    mode: "0700"
     state: directory
   become: true
 
@@ -56,14 +56,13 @@
   ansible.builtin.template:
     src: templates/piproxy.service.j2
     dest: /etc/systemd/system/{{ piproxy_service_name }}.service
+    mode: "0755"
   become: true
 
-- name: Check service status
-  command: systemctl is-active {{ piproxy_service_name }}
-  register: service_status
-  ignore_errors: true
-  failed_when: false
-  become: true
+- name: Check Service Status
+  ansible.builtin.systemd:
+    name: "{{ piproxy_service_name }}"
+  register: piproxy_service_status
 
 - name: Start service if it is not running
   ansible.builtin.systemd:
@@ -71,7 +70,7 @@
     daemon_reload: true
     state: started
     enabled: true
-  when: service_status.rc != 0
+  when: piproxy_service_status.status.ActiveState != "active"
   become: true
 
 - name: Reload service if it is running
@@ -80,5 +79,5 @@
     daemon_reload: true
     state: reloaded
     enabled: true
-  when: service_status.rc == 0
+  when: piproxy_service_status.status.ActiveState == "active"
   become: true

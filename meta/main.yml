@@ -10,7 +10,7 @@ galaxy_info:
   license: MIT
   min_ansible_version: "2.1"
   galaxy_tags:
-    - PyPI
+    - pypi
     - cache
     - proxy
     - pingora
