@@ -1,0 +1,23 @@
+---
+driver:
+  name: podman
+platforms:
+  - name: instance
+    image: docker.io/library/ubuntu:22.04
+    dockerfile: Dockerfile.j2
+    pre_build_image: false
+    systemd: always
+    command: /sbin/init
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+provisioner:
+  name: ansible
+scenario:
+  name: default
+  test_sequence:
+    - create
+    - converge
+    - verify
+    - destroy
+verifier:
+  name: testinfra
