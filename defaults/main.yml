@@ -1,6 +1,6 @@
 ---
 # defaults file for piproxy
-piproxy_version: "0.1.3"
+piproxy_version: "0.1.5"
 piproxy_service_name: "piproxy"
 piproxy_user: "piproxy"
 piproxy_group: "{{ piproxy_user }}"
