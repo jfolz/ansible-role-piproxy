@@ -6,26 +6,53 @@ Install the [piproxy](https://github.com/jfolz/piproxy) PyPI caching proxy.
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Platform Debian>=bullseye or Ubuntu>=focal, though realistically any recent systemd-based Linux should work.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+Below are variable as defined in `defaults/main.yml`
+
+```yaml
+piproxy_version: "0.1.5"
+piproxy_service_name: "piproxy"
+piproxy_user: "piproxy"
+piproxy_group: "{{ piproxy_user }}"
+piproxy_address: "0.0.0.0:8080"
+piproxy_prometheus_address: "0.0.0.0:9898"
+piproxy_cache_path: "/var/lib/cache/{{ piproxy_service_name }}"
+piproxy_cache_size: "20G"
+piproxy_read_size: "256k"
+piproxy_log_level: "info"
+piproxy_pingora_config:
+  threads: 4
+```
+
+For possible values to put under `piproxy_pingora_config`, see
+https://www.pingorarust.com/user_guide/conf
+
+**Note:** Overwriting `piproxy_pingora_config` will delete `threads: 4`,
+so remember to set whichever value you want as well.
+Also, you must not set `pid_file` and `upgrade_sock`.
+These always live under `/run/{{ piproxy_service_name }}/`
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+None
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+- name: Deploy piproxy PyPI cache
+  hosts: pypi-cache
+  vars:
+    piproxy_cache_path: "/var/cache/piproxy"
+    piproxy_log_level: "warn"
+  roles:
+    - name: jfolz.piproxy
+```
 
 License
 -------
@@ -35,4 +62,4 @@ MIT
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Made by Joachim Folz with support from the [SustainML](https://sustainml.eu/) project.
